@@ -1,7 +1,7 @@
 #ifndef GLOCALALIGNMENT_H_
 #define GLOCALALIGNMENT_H_
 
-#include "./../util/bio_util.h"
+#include "util/bio_util.hpp"
 
 namespace global_alignment {
 

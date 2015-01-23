@@ -1,9 +1,13 @@
 #ifndef LOCALALIGNMENT_H_
 #define LOCALALIGNMENT_H_
 
-#include "./../util/bio_util.h"
-#include "./../util/evalue.h"
+#include "sdk.hpp"
+#include "bio_util.hpp"
+#include "evalue.hpp"
 #include <time.h>
+
+#include <vector>
+using std::vector;
 
 namespace local_alignment {
 
@@ -16,15 +20,6 @@ namespace local_alignment {
 #define UP ('b')
 #define LEFT ('c')
 #define STOPorSTART ('d')
-
-struct AlignResult {
-  string align_query;
-  string midline;
-  string align_sequence;
-  int align_score;
-  double e_value;
-  double s_prime;
-};
 
 class LocalAlignment {
  public:
@@ -40,8 +35,8 @@ class LocalAlignment {
   char * midline;
   int rs;
 
-  clock_t start_t_;
-  uint64_t sum_time_;
+  clock_t start_t;
+  uint64_t sum_time;
 
   vector<vector<int> > s;
   vector<vector<char> > l;
@@ -56,13 +51,13 @@ class LocalAlignment {
   int nIdentity;
   double e_value;
 
-  int gapopen_;
-  int gapextension_;
+  int gapopen;
+  int gapextension;
 
-  const Evalue* evalue_;
+  const Evalue* evalue;
 
-  uint32_t max_rows_;
-  uint32_t max_cols_;
+  uint32_t max_rows;
+  uint32_t max_cols;
 
   void DisplayAlignment();
   void stringReverse(char * str, const int & n);

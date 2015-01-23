@@ -1,9 +1,9 @@
-#include "global_alignment.h"
-#include "./../util/option.h"
+#include "global_alignment.hpp"
+#include "option.hpp"
 
 #include <vector>
 #include <limits.h>
-#include "./../util/bio_util.h"
+#include "bio_util.hpp"
 
 namespace global_alignment {
 #define MAX_ALIGNMENT_LEN 6000

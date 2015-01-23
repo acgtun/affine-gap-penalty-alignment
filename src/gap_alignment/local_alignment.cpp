@@ -1,18 +1,15 @@
-#include "local_alignment.h"
-
-#include <vector>
-#include "./../util/bio_util.h"
+#include "local_alignment.hpp"
 
 namespace local_alignment {
 
-LocalAlignment::LocalAlignment(const Evalue* evalue, const uint32_t& max_rows,
-                               const uint32_t& max_cols)
-    : evalue_(evalue),
-      max_rows_(max_rows),
-      max_cols_(max_cols) {
+LocalAlignment::LocalAlignment(const Evalue* _evalue, const uint32_t& _max_rows,
+                               const uint32_t& _max_cols)
+    : evalue(_evalue),
+      max_rows(_max_rows),
+      max_cols(_max_cols) {
 
-  Option::GetOption("-gopen", gapopen_, -11);
-  Option::GetOption("-gext", gapextension_, -1);
+  Option::GetOption("-gopen", gapopen, -11);
+  Option::GetOption("-gext", gapextension, -1);
 
   s.resize(max_rows + 3);
   l.resize(max_rows + 3);
@@ -40,21 +37,21 @@ LocalAlignment::LocalAlignment(const Evalue* evalue, const uint32_t& max_rows,
   m = 0;
   n = 0;
   rs = 0;
-  start_t_ = 0;
-  sum_time_ = 0;
+  start_t = 0;
+  sum_time = 0;
 }
 
 LocalAlignment::~LocalAlignment() {
   INFO("Release Local Alignment memory...");
-  free(rU);
-  free(rV);
-  free(midline);
+  free (rU);
+  free (rV);
+  free (midline);
 
   printf("--INFO-- Local Alignment takes %.3lf seconds.\n",
-         (double) sum_time_ / CLOCKS_PER_SEC);
+         (double) sum_time / CLOCKS_PER_SEC);
 }
 
-void LocalAlignment::stringReverse(char * str, const int & n) {
+void LocalAlignment::stringReverse(char* str, const int& n) {
   char c;
   for (int i = 0; i < n / 2; i++) {
     c = str[i];
@@ -63,14 +60,14 @@ void LocalAlignment::stringReverse(char * str, const int & n) {
   }
 }
 
-int LocalAlignment::MaxOfFour(const int & s1, const int & s2, const int & s3,
+int LocalAlignment::MaxOfFour(const int & s1, const int& s2, const int& s3,
                               const int & s4) {
   /*if two of them are equal, then there are more than one optimal path*/
   return max(max(max(s1, s2), s3), s4);
 }
 
-char LocalAlignment::Direction(const int & s1, const int & s2, const int & s3,
-                               const int & s4) {
+char LocalAlignment::Direction(const int& s1, const int& s2, const int& s3,
+                               const int& s4) {
   if (s4 == s2)
     return UP;
   else if (s4 == s3)
@@ -104,17 +101,17 @@ void LocalAlignment::DisplayAlignment() {
 
   //cout << rU << endl;
   //cout << midline << endl;
- // cout << rV << endl;
+  // cout << rV << endl;
   //cout << "Alignment score: " << alignScore << endl;
- // cout << "Identity: " << (double) nIdentity / rs * 100 << "%" << endl;
+  // cout << "Identity: " << (double) nIdentity / rs * 100 << "%" << endl;
   //cout << "evalue: " << e_value << endl;
 }
 
-bool LocalAlignment::RunLocalAlignment(const char * U, const char * V,
-                                       const uint32_t & Ul,
-                                       const uint32_t & Vl, M8Results& res) {
-  start_t_ = clock();
-  if (Ul > max_rows_ || Vl > max_cols_) {
+bool LocalAlignment::RunLocalAlignment(const char* U, const char* V,
+                                       const uint32_t& Ul, const uint32_t& Vl,
+                                       M8Results& res) {
+  start_t = clock();
+  if (Ul > max_rows || Vl > max_cols) {
     printf("The length of the two sequences is too long.");
     return false;
   }
@@ -141,10 +138,10 @@ bool LocalAlignment::RunLocalAlignment(const char * U, const char * V,
   uint32_t max_i = 0, max_j = 0;
   for (uint32_t i = 1; i <= n; i++) {
     for (uint32_t j = 1; j <= m; j++) {
-      g[i][j] = max(s[i][j - 1] + gapopen_ + gapextension_,
-                    g[i][j - 1] + gapextension_);
-      h[i][j] = max(s[i - 1][j] + gapopen_ + gapextension_,
-                    h[i - 1][j] + gapextension_);
+      g[i][j] = max(s[i][j - 1] + gapopen + gapextension,
+                    g[i][j - 1] + gapextension);
+      h[i][j] = max(s[i - 1][j] + gapopen + gapextension,
+                    h[i - 1][j] + gapextension);
       stmp = s[i - 1][j - 1]
           + BLOSUM62[base[U[i - 1] - 'A']][base[V[j - 1] - 'A']];
       s4 = MaxOfFour(0, stmp, h[i][j], g[i][j]);
@@ -192,14 +189,14 @@ bool LocalAlignment::RunLocalAlignment(const char * U, const char * V,
 
   alignScore = max_score;
   //DisplayAlignment();
-  if (alignScore >= evalue_->score_by_evalue_[gap]) {
-    e_value = evalue_->GetEvalue(alignScore, gap);
+  if (alignScore >= evalue->score_by_evalue[gap]) {
+    e_value = evalue->GetEvalue(alignScore, gap);
     DisplayAlignment();
     res = M8Results("", nIdentity, rs, 0, 0, p + 1, max_i, q + 1, max_j,
-                    e_value, evalue_->GetBitScore(alignScore, gap));
+                    e_value, evalue->GetBitScore(alignScore, gap));
     return true;
   }
-  sum_time_ += (clock() - start_t_);
+  sum_time += (clock() - start_t);
   return false;
 }
 
