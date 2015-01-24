@@ -13,15 +13,13 @@ class GlobalAlignment {
                          const uint32_t & m);
 
  private:
-//  clock_t start_t_;
-//  uint64_t sum_time_;
 
   vector<vector<int> > s;
   vector<vector<int> > g;
   vector<vector<int> > h;
 
-  int gapopen_;
-  int gapextension_;
+  int gapopen;
+  int gapextension;
 
 };
 

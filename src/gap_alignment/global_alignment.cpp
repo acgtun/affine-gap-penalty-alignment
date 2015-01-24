@@ -9,8 +9,8 @@ namespace global_alignment {
 #define MAX_ALIGNMENT_LEN 6000
 
 GlobalAlignment::GlobalAlignment() {
-  Option::GetOption("-gopen", gapopen_, -11);
-  Option::GetOption("-gext", gapextension_, -1);
+  Option::GetOption("-gopen", gapopen, -11);
+  Option::GetOption("-gext", gapextension, -1);
 
   s.resize(MAX_ALIGNMENT_LEN);
   g.resize(MAX_ALIGNMENT_LEN);
@@ -49,12 +49,12 @@ int GlobalAlignment::RunGlobalAlignment(const char * U, const char * V,
   g[0][0] = INT_MIN + 10000;
   h[0][0] = INT_MIN + 10000;
   for (uint32_t i = 1; i <= m; i++) {
-    s[0][i] = gapopen_ + i * gapextension_;
+    s[0][i] = gapopen_ + i * gapextension;
     g[0][i] = INT_MIN + 10000;
     h[0][i] = INT_MIN + 10000;
   }
   for (uint32_t i = 1; i <= n; i++) {
-    s[i][0] = gapopen_ + i * gapextension_;
+    s[i][0] = gapopen_ + i * gapextension;
     g[i][0] = INT_MIN + 10000;
     h[i][0] = INT_MIN + 10000;
   }
@@ -62,21 +62,17 @@ int GlobalAlignment::RunGlobalAlignment(const char * U, const char * V,
   int stmp;
   for (uint32_t i = 1; i <= n; i++) {
     for (uint32_t j = 1; j <= m; j++) {
-      g[i][j] = max(s[i][j - 1] + gapopen_ + gapextension_,
-                    g[i][j - 1] + gapextension_);
-      h[i][j] = max(s[i - 1][j] + gapopen_ + gapextension_,
-                    h[i - 1][j] + gapextension_);
+      g[i][j] = max(s[i][j - 1] + gapopen_ + gapextension,
+                    g[i][j - 1] + gapextension);
+      h[i][j] = max(s[i - 1][j] + gapopen_ + gapextension,
+                    h[i - 1][j] + gapextension);
 
       stmp = s[i - 1][j - 1]
           + BLOSUM62[base[U[i - 1] - 'A']][base[V[j - 1] - 'A']];
       s[i][j] = max(max(g[i][j], h[i][j]), stmp);
-      //cout << s[i][j] << " ";
     }
-    //cout << endl;
   }
-  //sum_time_ += (clock() - start_t_);
 
-  // cout << "alignment score: " << s[n][m] << endl;
   return s[n][m];
 }
 

@@ -4,8 +4,11 @@
 #include "fasta_file.hpp"
 #include "local_alignment.hpp"
 
+#include <vector>
 #include <string>
 #include <fstream>
+
+using std::vector;
 using std::string;
 using std::ofstream;
 
@@ -38,40 +41,38 @@ void DisplayResults(const string& query_name, const string& database_file,
 
 int main(int argc, const char* argv[]) {
   InitProgram(argc, argv);
-  string database_file, query_file;
+  string database_file, query_file, output_file;
   int outfmt;
-  Option::GetOption("-db", database_file);
-  Option::GetOption("-query_file", query_file);
-  Option::GetOption("-outfmt", outfmt, 7);
+  Option::GetOption("-d", database_file);
+  Option::GetOption("-q", query_file);
+  Option::GetOption("-f", outfmt, 7);
+  Option::GetOption("-o", output_file);
 
   FastaFile database(database_file);
   FastaFile queries(query_file);
+
   Evalue evalue(database.num_of_characters, database.num_of_sequences);
-
-  cout << queries.max_sequence_length << endl;
-  cout << database.max_sequence_length << endl;
-
   LocalAlignment local_align(&evalue, queries.max_sequence_length,
                              database.max_sequence_length);
-  M8Results res;
-  ofstream fout(string(query_file + "full_local_alignment.txt").c_str());
+
+  ofstream fout(output_file.c_str());
   for (uint32_t i = 0; i < queries.num_of_sequences; ++i) {
-    cout << "query " << i << " " << queries.sequences_names[i] << endl;
     evalue.UpdateValues(strlen(queries.sequences[i]));
-    vector < M8Results > aligned_results;
+    vector<M8Results> aligned_results;
+    M8Results res;
     for (uint32_t j = 0; j < database.num_of_sequences; ++j) {
       if (local_align.RunLocalAlignment(queries.sequences[i],
                                         database.sequences[j],
                                         strlen(queries.sequences[i]),
                                         strlen(database.sequences[j]), res)) {
-        cout << "protein: " << j << " " << database.sequences_names[j] << endl;
         res.protein_name = database.sequences_names[j];
         aligned_results.push_back(res);
       }
     }
-    DisplayResults(queries.sequences_names[i], database_file, aligned_results,
-                   outfmt, fout);
+    DisplayResults(queries.sequences_names[i], database_file,
+                   aligned_results, outfmt, fout);
   }
+
   fout.close();
 
   return 0;

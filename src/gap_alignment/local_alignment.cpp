@@ -42,13 +42,13 @@ LocalAlignment::LocalAlignment(const Evalue* _evalue, const uint32_t& _max_rows,
 }
 
 LocalAlignment::~LocalAlignment() {
-  INFO("Release Local Alignment memory...");
+ // INFO("Release Local Alignment memory...");
   free (rU);
   free (rV);
   free (midline);
 
-  printf("--INFO-- Local Alignment takes %.3lf seconds.\n",
-         (double) sum_time / CLOCKS_PER_SEC);
+ // printf("--INFO-- Local Alignment takes %.3lf seconds.\n",
+        // (double) sum_time / CLOCKS_PER_SEC);
 }
 
 void LocalAlignment::stringReverse(char* str, const int& n) {
