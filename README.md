@@ -1,4 +1,4 @@
-These are **affine gap penalty local alignment** and **affine gap penalty global 
+Here are **affine gap penalty local alignment** and **affine gap penalty global 
 alignment**.
 
-Any question please contact haifengc at usc dot edu
+If you are looking for global alignment, banded global alignment or multiple glbol alingment please go https://github.com/acgtun/global-alignment
